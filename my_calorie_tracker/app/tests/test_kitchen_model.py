@@ -5,16 +5,16 @@ from typing import Dict, Any
 
 
 from unittest.mock import patch
-from meal_max.models.kitchen_model import Meal
-from meal_max.models.kitchen_model import delete_meal
-from meal_max.models.kitchen_model import get_meal_by_id
-from meal_max.models.kitchen_model import get_meal_by_name
+from app.models.kitchen_model import Meal
+from app.models.kitchen_model import delete_meal
+from app.models.kitchen_model import get_meal_by_id
+from app.models.kitchen_model import get_meal_by_name
 #from meal_max.models.kitchen_model import get_leaderboard
-from meal_max.models.kitchen_model import update_meal_stats
-from meal_max.models.kitchen_model import create_meal
+from app.models.kitchen_model import update_meal_stats
+from app.models.kitchen_model import create_meal
 #from meal_max.models.kitchen_model import clear_meals
-from meal_max.utils.sql_utils import get_db_connection
-from meal_max.utils.logger import configure_logger
+from app.utils.sql_utils import get_db_connection
+from app.utils.logger import configure_logger
 
 #def test_create_meal():
 def test_create_meal():

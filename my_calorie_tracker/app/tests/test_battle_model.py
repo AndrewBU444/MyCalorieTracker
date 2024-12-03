@@ -1,8 +1,8 @@
 import pytest
 import logging
 from unittest.mock import MagicMock, patch
-from meal_max.models.battle_model import BattleModel
-from meal_max.models.kitchen_model import Meal
+from app.models.battle_model import BattleModel
+from app.models.kitchen_model import Meal
 
 def create_sample_meal(name, price, cuisine, difficulty, meal_id): #Making meals for testing
     meal = MagicMock(spec=Meal)
