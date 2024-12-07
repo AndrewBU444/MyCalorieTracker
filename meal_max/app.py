@@ -182,3 +182,31 @@ def get_protein(food):
 
     protein_data = [{"name": item["name"], "protein": item["protein_g"]} for item in data["items"]]
     return jsonify(protein_data)
+
+@app.route('/carbohydrates/<food>', methods=['GET'])
+def get_carbohydrates(food):
+    """
+    Route to get carbohydrate information for a food item.
+    """
+    data = api_client.get_nutrition(food)
+    if "items" not in data:
+        return jsonify({"error": "No data found"}), 404
+
+    carbs_data = [{"name": item["name"], "carbohydrates": item["carbohydrates_total_g"]} for item in data["items"]]
+    return jsonify(carbs_data)
+
+@app.route('/sugar/<food>', methods=['GET'])
+def get_sugar(food):
+    """
+    Route to get sugar information for a food item.
+    """
+    data = api_client.get_nutrition(food)
+    if "items" not in data:
+        return jsonify({"error": "No data found"}), 404
+
+    sugar_data = [{"name": item["name"], "sugar": item["sugar_g"]} for item in data["items"]]
+    return jsonify(sugar_data)
+
+if __name__ == '__main__':
+    app.run(debug=True)
+
