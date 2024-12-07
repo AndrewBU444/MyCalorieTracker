@@ -16,6 +16,7 @@ def app():
 def client(app):
     return app.test_client()  # This returns the Flask test client
 
+#should get rid of. There is no equivolent for what we're doing
 def test_healthcheck(client):
     """Test the healthcheck route"""
     response = client.get('/api/health')
@@ -60,7 +61,7 @@ def test_get_nutrition(client, mocker):
     }
     
     # Mock the get_nutrition function
-    mocker.patch.object(get_nutrition, 'get_nutrition', return_value=mock_response)
+    mocker.patch.object(CalorieNinjasAPIClient, 'get_nutrition', return_value=mock_response) #how fix
 
     response = client.get('/nutrition/Apple')
     assert response.status_code == 200
