@@ -1,38 +1,19 @@
-from flask import Flask, request, jsonify,make_response, Response 
+from flask import Flask, request, jsonify, make_response, Response 
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 from dotenv import load_dotenv
 from config import ProductionConfig
+from api_client import CalorieNinjasAPIClient  # Change from 'get_nutrition' to the class
+import os
 
 # Load environment variables from .env file
 load_dotenv()
 
-def create_app(config_class=ProductionConfig):
-    app = Flask(__name__)
-    app.config.from_object(config_class)
+# Access the API key
+API_KEY = os.getenv('API_KEY')
 
-    db.init_app(app)  # Initialize db with app
-    with app.app_context():
-        db.create_all()  # Recreate all tables
-
-
-    ####################################################
-    #
-    # Healthchecks
-    #
-    ####################################################
-
-
-    @app.route('/api/health', methods=['GET'])
-    def healthcheck() -> Response:
-        """
-        Health check route to verify the service is running.
-
-        Returns:
-            JSON response indicating the health status of the service.
-        """
-        app.logger.info('Health check')
-        return make_response(jsonify({'status': 'healthy'}), 200)
+# Initialize the API client
+api_client = CalorieNinjasAPIClient(api_key=API_KEY)
 
 # Initialize the Flask app
 app = Flask(__name__)
@@ -47,7 +28,7 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     calorie_goal = db.Column(db.Integer, nullable=False)
-    starting_weight = db.Column(db.Integrer, nullable=False)
+    starting_weight = db.Column(db.Integer, nullable=False)
 
 class CalorieIntake(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -153,18 +134,16 @@ def delete_user(username):
     return jsonify({'message': 'User deleted successfully'}), 200
 
 #===================================================
-# Routes
+# Nutrition Routes
 #===================================================
-from api_client import fetch_nutrition
-
-app = Flask(__name__)
 
 @app.route('/nutrition/<food>', methods=['GET'])
-def get_nutrition(food):
+def get_nutrition_route(food):
     """
     Route to get full nutrition information for a food item.
     """
-    data = fetch_nutrition(food)
+    data = api_client.get_nutrition(food)  # Use the api_client instance
+
     if "items" not in data:
         return jsonify({"error": "No data found"}), 404
     
@@ -184,54 +163,22 @@ def get_calories(food):
     """
     Route to get calorie information for a food item.
     """
-    data = fetch_nutrition(food)
+    data = api_client.get_nutrition(food)
     if "items" not in data:
         return jsonify({"error": "No data found"}), 404
     
     calories_data = [{"name": item["name"], "calories": item["calories"]} for item in data["items"]]
     return jsonify(calories_data)
 
+
 @app.route('/protein/<food>', methods=['GET'])
 def get_protein(food):
     """
     Route to get protein information for a food item.
     """
-    data = fetch_nutrition(food)
+    data = api_client.get_nutrition(food)  # Use get_nutrition directly here
     if "items" not in data:
         return jsonify({"error": "No data found"}), 404
 
     protein_data = [{"name": item["name"], "protein": item["protein_g"]} for item in data["items"]]
     return jsonify(protein_data)
-
-@app.route('/carbohydrates/<food>', methods=['GET'])
-def get_carbohydrates(food):
-    """
-    Route to get carbohydrate information for a food item.
-    """
-    data = fetch_nutrition(food)
-    if "items" not in data:
-        return jsonify({"error": "No data found"}), 404
-
-    carbs_data = [{"name": item["name"], "carbohydrates": item["carbohydrates_total_g"]} for item in data["items"]]
-    return jsonify(carbs_data)
-
-@app.route('/sugar/<food>', methods=['GET'])
-def get_sugar(food):
-    """
-    Route to get sugar information for a food item.
-    """
-    data = fetch_nutrition(food)
-    if "items" not in data:
-        return jsonify({"error": "No data found"}), 404
-
-    sugar_data = [{"name": item["name"], "sugar": item["sugar_g"]} for item in data["items"]]
-    return jsonify(sugar_data)
-
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-# Run the app
-if __name__ == '__main__':
-    app = create_app()
-    app.run(debug=True, host='0.0.0.0', port=5000)
