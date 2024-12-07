@@ -24,13 +24,35 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize the database
 db = SQLAlchemy(app)
 
-# Define database models
+# User model with password hashing and salt
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     calorie_goal = db.Column(db.Integer, nullable=False)
     starting_weight = db.Column(db.Integer, nullable=False)
+    salt = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(128), nullable=False)
 
+    def __init__(self, username, password, calorie_goal, starting_weight):
+        self.username = username
+        self.salt = self.generate_salt()
+        self.password_hash = self.generate_password_hash(password)
+        self.calorie_goal = calorie_goal
+        self.starting_weight = starting_weight
+
+    def generate_salt(self):
+        """Generate a random salt"""
+        return os.urandom(16).hex()
+
+    def generate_password_hash(self, password):
+        """Generate password hash using salt"""
+        return generate_password_hash(password + self.salt)
+
+    def check_password(self, password):
+        """Check if the provided password matches the stored hash"""
+        return check_password_hash(self.password_hash, password + self.salt)
+
+# Calorie Intake model
 class CalorieIntake(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
@@ -108,7 +130,7 @@ def update_password():
     db.session.commit()
     return jsonify({'message': 'Password updated successfully'}), 200
 
-# 2. Add daily calorie intake
+# 4. Add daily calorie intake
 @app.route('/intake', methods=['POST'])
 def add_calorie_intake():
     data = request.get_json()
@@ -133,7 +155,7 @@ def add_calorie_intake():
     db.session.commit()
     return jsonify({'message': 'Calorie intake added successfully'}), 201
 
-# 3. Get calorie intake history
+# 5. Get calorie intake history
 @app.route('/history/<username>', methods=['GET'])
 def get_history(username):
     user = User.query.filter_by(username=username).first()
@@ -149,7 +171,7 @@ def get_history(username):
         'history': history
     }), 200
 
-# 4. Update calorie goal
+# 7. Update calorie goal
 @app.route('/goal', methods=['PUT'])
 def update_goal():
     data = request.get_json()
@@ -167,7 +189,7 @@ def update_goal():
     db.session.commit()
     return jsonify({'message': 'Calorie goal updated successfully'}), 200
 
-# 5. Delete user (optional)
+# 8. Delete user 
 @app.route('/delete/<username>', methods=['DELETE'])
 def delete_user(username):
     user = User.query.filter_by(username=username).first()
