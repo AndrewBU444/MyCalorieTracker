@@ -27,6 +27,10 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 # Initialize the database
 db = SQLAlchemy(app)
 
+# Create the database tables
+with app.app_context():
+    db.create_all()
+
 #Health Checks
 @app.route('/api/health', methods=['GET'])
 def healthcheck() -> Response:
@@ -96,9 +100,6 @@ class CalorieIntake(db.Model):
     date = db.Column(db.Date, nullable=False)
     calories = db.Column(db.Integer, nullable=False)
 
-# Create the database tables
-with app.app_context():
-    db.create_all()
 
 # Routes
 # 1. Register a user and set a calorie goal (Create Account)
