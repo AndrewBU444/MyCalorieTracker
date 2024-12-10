@@ -8,13 +8,9 @@ from sqlalchemy.orm import relationship
 from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 
-from meal_max.clients.redis_client import redis_client
-from meal_max.db import db
-from meal_max.utils.logger import configure_logger
-
-
+import logging 
+from db import db
 logger = logging.getLogger(__name__)
-configure_logger(logger)
 
 
 @dataclass
@@ -59,19 +55,25 @@ class CalorieTrackerModel(db.Model):
         raise ValueError(f"User not found: {username}")
 
     def log_calories(self, user_id: int, calories: int, log_date: date = None):
-        """
-        Logs calorie intake for the user.
-        """
+        if calories <= 0:
+            raise ValueError("Calories must be a positive number")
+
         log_date = log_date or date.today()
+        existing_log = CalorieIntake.query.filter_by(user_id=user_id, date=log_date).first()
+        if existing_log:
+            raise ValueError(f"Calorie log for {log_date} already exists")
+
         calorie_log = CalorieIntake(user_id=user_id, date=log_date, calories=calories)
         db.session.add(calorie_log)
         db.session.commit()
-        logger.info(f"Logged {calories} calories for user {user_id} on {log_date}.")
 
     def log_weight(self, user_id: int, weight: float, log_date: date = None):
         """
         Logs weight for the user.
         """
+        if weight <= 0:
+            raise ValueError("Weight must be a positive number")
+
         log_date = log_date or date.today()
         weight_log = WeightLog(user_id=user_id, date=log_date, weight=weight)
         db.session.add(weight_log)
@@ -86,7 +88,6 @@ class CalorieTrackerModel(db.Model):
         db.session.delete(log)
         db.session.commit()
         logger.info(f"Deleted calorie log with ID {log_id}.")
-
 
     def get_user_summary(self, username: str):
         """
