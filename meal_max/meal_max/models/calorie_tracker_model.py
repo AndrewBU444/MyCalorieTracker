@@ -1,5 +1,5 @@
 from dataclasses import asdict, dataclass
-from db import CalorieIntake, WeightLog
+from meal_max.db import CalorieIntake, WeightLog, db
 import logging
 from typing import Any, List
 from datetime import date
@@ -9,7 +9,7 @@ from sqlalchemy import event
 from sqlalchemy.exc import IntegrityError
 
 import logging 
-from db import db
+# from db import db
 logger = logging.getLogger(__name__)
 
 

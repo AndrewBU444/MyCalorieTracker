@@ -5,8 +5,8 @@ from dotenv import load_dotenv
 from config import ProductionConfig
 from api_client import CalorieNinjasAPIClient  # Change from 'get_nutrition' to the class
 import os
-from calorie_tracker_model import CalorieTrackerModel
-from db import CalorieIntake, WeightLog, db
+from meal_max.models.calorie_tracker_model import CalorieTrackerModel
+from meal_max.db import CalorieIntake, WeightLog, db, create_app
 from werkzeug.security import generate_password_hash, check_password_hash
 from meal_max.utils.sql_utils import check_database_connection, check_table_exists
 
@@ -20,16 +20,15 @@ API_KEY = os.getenv('API_KEY')
 api_client = CalorieNinjasAPIClient(api_key=API_KEY)
 
 # Initialize the Flask app
-app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///calorie_tracker.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app = create_app()#Flask(__name__)
+#app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///calorie_tracker.db'
+#app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 # Initialize the database
-db = SQLAlchemy(app)
+#db = SQLAlchemy(app)
 
 # Create the database tables
-with app.app_context():
-    db.create_all()
+
 
 #Health Checks
 @app.route('/api/health', methods=['GET'])
@@ -57,49 +56,22 @@ def db_check() -> Response:
         app.logger.info("Checking database connection...")
         check_database_connection()
         app.logger.info("Database connection is OK.")
-        app.logger.info("Checking if meals table exists...")
-        check_table_exists("meals")
-        app.logger.info("meals table exists.")
+        app.logger.info("Checking if users table exists...")
+        check_table_exists("User")
+        app.logger.info("users table exists.")
         return make_response(jsonify({'database_status': 'healthy'}), 200)
     except Exception as e:
         return make_response(jsonify({'error': str(e)}), 404)
 
 
 # User model with password hashing and salt
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(50), unique=True, nullable=False)
-    calorie_goal = db.Column(db.Integer, nullable=False)
-    starting_weight = db.Column(db.Integer, nullable=False)
-    salt = db.Column(db.String(128), nullable=False)
-    password_hash = db.Column(db.String(128), nullable=False)
 
-    def __init__(self, username, password, calorie_goal, starting_weight):
-        self.username = username
-        self.salt = self.generate_salt()
-        self.password_hash = self.generate_password_hash(password)
-        self.calorie_goal = calorie_goal
-        self.starting_weight = starting_weight
 
-    def generate_salt(self):
-        """Generate a random salt"""
-        return os.urandom(16).hex()
 
-    def generate_password_hash(self, password):
-        """Generate password hash using salt"""
-        return generate_password_hash(password + self.salt)
 
-    def check_password(self, password):
-        """Check if the provided password matches the stored hash"""
-        return check_password_hash(self.password_hash, password + self.salt)
-
-# Calorie Intake model
-class CalorieIntake(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    date = db.Column(db.Date, nullable=False)
-    calories = db.Column(db.Integer, nullable=False)
-
+# Create the database tables
+with app.app_context():
+    db.create_all()
 
 # Routes
 # 1. Register a user and set a calorie goal (Create Account)
