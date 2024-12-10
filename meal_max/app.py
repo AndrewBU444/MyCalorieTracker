@@ -5,6 +5,8 @@ from dotenv import load_dotenv
 from config import ProductionConfig
 from api_client import CalorieNinjasAPIClient  # Change from 'get_nutrition' to the class
 import os
+from calorie_tracker_model import CalorieTrackerModel
+from db import CalorieIntake, WeightLog, db
 from werkzeug.security import generate_password_hash, check_password_hash
 from meal_max.utils.sql_utils import check_database_connection, check_table_exists
 
@@ -109,17 +111,20 @@ def create_account():
     starting_weight = data.get('starting_weight')
 
     if not username or not password or not calorie_goal or not starting_weight:
-        return jsonify({'error': 'Username, password, calorie goal, and starting weight are required'}), 400
+        return jsonify({'error': 'All fields are required'}), 400
 
-    existing_user = User.query.filter_by(username=username).first()
-    if existing_user:
-        return jsonify({'error': 'User already exists'}), 400
-
-    hashed_password = generate_password_hash(password)  # Hash the password
-    new_user = User(username=username, password=hashed_password, calorie_goal=calorie_goal, starting_weight=starting_weight)
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({'message': 'User created successfully'}), 201
+    try:
+        user = CalorieTrackerModel(
+            username=username,
+            password=password,
+            calorie_goal=calorie_goal,
+            starting_weight=starting_weight
+        )
+        db.session.add(user)
+        db.session.commit()
+        return jsonify({'message': 'Account created successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 # 2. Login (Authenticate User)
 @app.route('/login', methods=['POST'])
@@ -190,21 +195,39 @@ def add_calorie_intake():
     db.session.commit()
     return jsonify({'message': 'Calorie intake added successfully'}), 201
 
+@app.route('/intake', methods=['POST'])
+def log_calorie_intake():
+    data = request.get_json()
+    username = data.get('username')
+    calories = data.get('calories')
+    date_str = data.get('date', None)
+
+    if not username or not calories:
+        return jsonify({'error': 'Username and calories are required'}), 400
+
+    try:
+        user = CalorieTrackerModel.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
+
+        log_date = datetime.strptime(date_str, '%Y-%m-%d').date() if date_str else datetime.today().date()
+        user.log_calories(user_id=user.id, calories=calories, log_date=log_date)
+        return jsonify({'message': 'Calorie intake logged successfully'}), 201
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
 # 5. Get calorie intake history
 @app.route('/history/<username>', methods=['GET'])
-def get_history(username):
-    user = User.query.filter_by(username=username).first()
-    if not user:
-        return jsonify({'error': 'User not found'}), 404
+def get_user_history(username):
+    try:
+        user = CalorieTrackerModel.query.filter_by(username=username).first()
+        if not user:
+            return jsonify({'error': 'User not found'}), 404
 
-    intakes = CalorieIntake.query.filter_by(user_id=user.id).order_by(CalorieIntake.date).all()
-    history = [{'date': intake.date.strftime('%Y-%m-%d'), 'calories': intake.calories} for intake in intakes]
-
-    return jsonify({
-        'username': user.username,
-        'calorie_goal': user.calorie_goal,
-        'history': history
-    }), 200
+        summary = user.get_user_summary(username)
+        return jsonify(summary), 200
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
 
 # 7. Update calorie goal
 @app.route('/goal', methods=['PUT'])
