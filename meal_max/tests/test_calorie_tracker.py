@@ -12,6 +12,23 @@ def setup_database(app):
         yield
         db.drop_all()
 
+@pytest.fixture
+def calorie_tracker_model():
+    """Fixture to provide a new instance of CalorieTrackerModel for each test."""
+    return CalorieTrackerModel(
+        username="test_user",
+        password="test_password",
+        calorie_goal=2000,
+        starting_weight=75.0
+    )
+
+@pytest.fixture
+def sample_calorie_log():
+    return {"user_id": 1, "date": date.today(), "calories": 1800}
+
+@pytest.fixture
+def sample_weight_log():
+    return {"user_id": 1, "date": date.today(), "weight": 74.5}
 
 @pytest.fixture
 def sample_user(setup_database):
@@ -70,7 +87,9 @@ def test_find_user_not_found(setup_database):
 def test_log_calories(sample_user):
     """Test logging calorie intake for a user."""
     log_date = date.today()
-    sample_user.log_calories(user_id=sample_user.id, calories=1800, log_date=log_date)
+    sample_user.log_calories(user_id=sample_user.id, 
+                             calories=1800, 
+                             log_date=log_date)
 
     # Verify the log is created
     log = CalorieIntake.query.filter_by(user_id=sample_user.id, date=log_date).first()
@@ -91,7 +110,9 @@ def test_log_calories_duplicate_entry(sample_user):
 def test_log_weight(sample_user):
     """Test logging weight for a user."""
     log_date = date.today()
-    sample_user.log_weight(user_id=sample_user.id, weight=74.5, log_date=log_date)
+    sample_user.log_weight(user_id=sample_user.id, 
+                           weight=74.5, 
+                           log_date=log_date)
 
     # Verify the log is created
     log = WeightLog.query.filter_by(user_id=sample_user.id, date=log_date).first()
@@ -107,8 +128,13 @@ def test_log_weight(sample_user):
 def test_get_user_summary(sample_user):
     """Test retrieving a user's summary."""
     log_date = date.today()
-    sample_user.log_calories(user_id=sample_user.id, calories=1800, log_date=log_date)
-    sample_user.log_weight(user_id=sample_user.id, weight=74.5, log_date=log_date)
+    sample_user.log_calories(user_id=sample_user.id, 
+                             calories=1800, 
+                             log_date=log_date)
+    
+    sample_user.log_weight(user_id=sample_user.id, 
+                           weight=74.5, 
+                           log_date=log_date)
 
     summary = sample_user.get_user_summary(username="test_user")
 
