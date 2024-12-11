@@ -34,10 +34,12 @@ The application integrates with the Calorie Ninjas API to fetch nutritional valu
 API_KEY=<your_api_key>
 
 ### 2. Set Up the Environment
-- Activate the virtual environment by running: ./setup_env.sh
+- Activate the virtual environment by running:
+-./setup_env.sh
 
 ### 3. Start the Application
-- Run the application using Docker: ./run_docker.sh
+- Run the application using Docker:
+-./run_docker.sh
 
 ### 4. Access the App
 - The app will be running on the port specified in the `.env` file. If no port is specified, the default port is `8000`.
@@ -116,26 +118,6 @@ API_KEY=<your_api_key>
     "error": "User not found"
   }
 ---
-### **5. Login (Authenticate User)**
-- **Path**: `/login`
-- **Request Type**: `POST`
-- **Purpose**: Authenticates a user with their username and password.
-- **Response Format**: `JSON`
-- Example Response:
-- Code: 200
-- Content:
-  ```json
-  {
-    "message": "Login successful"
-  }
-- Error Response Example:
-- Code: 404
-- Content:
-- ```json
-  {
-    "error": "User not found"
-  }
----
 ### **6. Update Password**
 - **Path**: `/update-password`
 - **Request Type**: `PUT`
@@ -175,6 +157,13 @@ API_KEY=<your_api_key>
 - **Request Type**: `POST`
 - **Purpose**: Logs calorie intake for a specific user on a given date.
 - **Response Format**: `JSON`
+- **Request Format**:
+  ```json
+  {
+  "username": "string",
+  "date": "YYYY-MM-DD",
+  "calories": "integer"
+  }
 - Example Response:
 - Code: 201
 - Content:
@@ -239,11 +228,17 @@ API_KEY=<your_api_key>
   }
 ---
 
-### **9. Update Goal**
+### **9. Update Calorie Goal**
 - **Path**: `/goal`
 - **Request Type**: `PUT`
 - **Purpose**: Updates a user's calorie goal.
 - **Response Format**: `JSON`
+- **Request Format**:
+  ```json
+  {
+  "username": "string",
+  "calorie_goal": "integer"
+  }
 - Example Response:
 - Code: 200
 - Content:
@@ -443,7 +438,6 @@ API_KEY=<your_api_key>
     ```
 
 ---
-  
 
 
 
