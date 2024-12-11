@@ -135,7 +135,7 @@ The application integrates with the Calorie Ninjas API to fetch nutritional valu
 ### **7. Add Daily Calorie Intake**
 - **Path**: `/intake`
 - **Request Type**: `POST`
-- **Purpose**: Authenticates a user with their username and password.
+- **Purpose**: Logs calorie intake for a specific user on a given date.
 - **Response Format**: `JSON`
 - Example Response:
 - Code: 201
@@ -166,7 +166,40 @@ The application integrates with the Calorie Ninjas API to fetch nutritional valu
     "error": "Username, date, and calories are required."
   }
 ---
-
+### **8. Get Calorie Intake History**
+- **Path**: `/history/<username>`
+- **Request Type**: `GET`
+- **Purpose**: Retrieves calorie intake and weight logs for a user.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 200
+- Content:
+  ```json
+  {
+  "username": "john_doe",
+  "calorie_goal": 2000,
+  "starting_weight": 75.5,
+  "calorie_logs": [
+    {
+      "date": "2024-12-01",
+      "calories": 1800
+    }
+  ],
+  "weight_logs": [
+    {
+      "date": "2024-12-01",
+      "weight": 75.0
+    }
+  ]
+}
+- Error Response Example:
+- Code: 404
+- Content:
+- ```json
+  {
+    "error": "User not found"
+  }
+---
 
   
 
