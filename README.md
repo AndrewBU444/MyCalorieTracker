@@ -34,12 +34,10 @@ The application integrates with the Calorie Ninjas API to fetch nutritional valu
 API_KEY=<your_api_key>
 
 ### 2. Set Up the Environment
-- Activate the virtual environment by running:
--./setup_env.sh
+- Activate the virtual environment by running: ./setup_env.sh
 
 ### 3. Start the Application
-- Run the application using Docker:
--./run_docker.sh
+- Run the application using Docker: ./run_docker.sh
 
 ### 4. Access the App
 - The app will be running on the port specified in the `.env` file. If no port is specified, the default port is `8000`.
