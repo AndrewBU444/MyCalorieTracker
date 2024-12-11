@@ -4,6 +4,55 @@ Our Calorie Tracker App is a tracker allows users to monitor their daily calorie
 
 The application integrates with the Calorie Ninjas API to fetch nutritional values for specific food items, providing precise insights into calories, proteins, carbohydrates, and sugars, which help users make informed dietary decisions.
 
+# Calorie Tracker App
+
+## Overview
+
+The Calorie Tracker App is a user-friendly application designed to help users manage their daily calorie intake and track their progress toward fitness goals. The app provides the following core features:
+
+## Key Features
+
+### User Account Management
+- **Create an account** with personalized calorie goals and starting weight.
+- Ensure **username uniqueness** and securely store passwords.
+- **Update account passwords** securely.
+- **Log in** with an existing account using the correct credentials.
+
+### Calorie Tracking
+- **Record daily calorie intake** and review past entries.
+- Retrieve **nutritional information** for food items, including:
+  - Calories
+  - Protein
+  - Carbohydrates
+  - Sugar content  
+  (via the **CalorieNinjas API**)
+- View **personalized feedback** based on calorie intake and goals.
+
+### Progress Monitoring
+- **Track weekly weigh-ins** and adjust goals as needed.
+- Access detailed **statistics** on progress toward calorie and fitness goals.
+
+### External API Integration
+- Fetch detailed nutritional information for food items using the **CalorieNinjas API**.
+
+## Steps to Run the Application
+
+### 1. Generate an API Key
+- Obtain an API key for the CalorieNinjas API from [https://calorieninjas.com/](https://calorieninjas.com/).
+- Add the key to a `.env` file in the format:
+API_KEY=<your_api_key>
+
+### 2. Set Up the Environment
+- Activate the virtual environment by running:
+-./setup_env.sh
+
+### 3. Start the Application
+- Run the application using Docker:
+-./run_docker.sh
+
+### 4. Access the App
+- The app will be running on the port specified in the `.env` file. If no port is specified, the default port is `8000`.
+
 ## Routes Documentation:
 ### 1. Health Check 
 - **Path**: `/api/health`
