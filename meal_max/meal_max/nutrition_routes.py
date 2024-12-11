@@ -12,6 +12,20 @@ nutrition_blueprint = Blueprint('nutrition', __name__)
 def get_nutrition_route(food):
     """
     Route to get full nutrition information for a food item.
+
+    Parameters:
+        food (str): The name of the food item to get nutrition information for.
+
+    Returns:
+        JSON: A list of nutritional details for the specified food item, including:
+              - name
+              - calories
+              - protein
+              - carbohydrates
+              - sugar
+        HTTP Status Codes:
+            - 200: Successful retrieval of nutrition data.
+            - 404: No data found for the specified food item.
     """
     data = api_client.get_nutrition(food)  # Use the api_client instance
 
@@ -33,6 +47,15 @@ def get_nutrition_route(food):
 def get_calories(food):
     """
     Route to get calorie information for a food item.
+
+    Parameters:
+        food (str): The name of the food item to get calorie information for.
+
+    Returns:
+        JSON: A list containing the name and calories for the specified food item.
+        HTTP Status Codes:
+            - 200: Successful retrieval of calorie data.
+            - 404: No data found for the specified food item.
     """
     data = api_client.get_nutrition(food)
     if "items" not in data:
@@ -46,6 +69,15 @@ def get_calories(food):
 def get_protein(food):
     """
     Route to get protein information for a food item.
+
+    Parameters:
+        food (str): The name of the food item to get protein information for.
+
+    Returns:
+        JSON: A list containing the name and protein content for the specified food item.
+        HTTP Status Codes:
+            - 200: Successful retrieval of protein data.
+            - 404: No data found for the specified food item.
     """
     data = api_client.get_nutrition(food)  # Use get_nutrition directly here
     if "items" not in data:
@@ -58,6 +90,15 @@ def get_protein(food):
 def get_carbohydrates(food):
     """
     Route to get carbohydrate information for a food item.
+
+    Parameters:
+        food (str): The name of the food item to get carbohydrate information for.
+
+    Returns:
+        JSON: A list containing the name and carbohydrate content for the specified food item.
+        HTTP Status Codes:
+            - 200: Successful retrieval of carbohydrate data.
+            - 404: No data found for the specified food item.
     """
     data = api_client.get_nutrition(food)
     if "items" not in data:
@@ -70,6 +111,15 @@ def get_carbohydrates(food):
 def get_sugar(food):
     """
     Route to get sugar information for a food item.
+
+    Parameters:
+        food (str): The name of the food item to get sugar information for.
+
+    Returns:
+        JSON: A list containing the name and sugar content for the specified food item.
+        HTTP Status Codes:
+            - 200: Successful retrieval of sugar data.
+            - 404: No data found for the specified food item.
     """
     data = api_client.get_nutrition(food)
     if "items" not in data:
@@ -80,4 +130,3 @@ def get_sugar(food):
 
 if __name__ == '__main__':
     app.run(debug=True)
-
