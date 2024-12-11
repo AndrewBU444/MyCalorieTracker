@@ -241,6 +241,210 @@ API_KEY=<your_api_key>
   }
 ---
 
+### **9. Update Goal**
+- **Path**: `/goal`
+- **Request Type**: `PUT`
+- **Purpose**: Updates a user's calorie goal.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 200
+- Content:
+  ```json
+  {
+    "message": "Calorie goal updated successfully"
+  }
+- Error Response Example:
+- Code: 404
+- Content:
+- ```json
+  {
+    "error": "User not found"
+  }
+- Error Response Example:
+- Code: 40
+- Content:
+- ```json
+  {
+    "error": "Username and new calorie goal are required"
+  }
+---
+### **9. Update Goal**
+- **Path**: `/goal`
+- **Request Type**: `PUT`
+- **Purpose**: Updates a user's calorie goal.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 200
+- Content:
+  ```json
+  {
+    "message": "Calorie goal updated successfully"
+  }
+- Error Response Example:
+- Code: 404
+- Content:
+- ```json
+  {
+    "error": "User not found"
+  }
+- Error Response Example:
+- Code: 40
+- Content:
+- ```json
+  {
+    "error": "Username and new calorie goal are required"
+  }
+---
+### **10. Delete User**
+- **Path**: `/delete/<username>`
+- **Request Type**: `DELETE`
+- **Purpose**: Deletes a user and their associated logs.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 200
+- Content:
+  ```json
+  {
+    "message": "User deleted successfully"
+  }
+- Error Response Example:
+- Code: 404
+- Content:
+- ```json
+  {
+    "error": "User not found"
+  }
+---
+### **11. Get Nutrition Information**
+- **Path**: `/nutrition/<food>`
+- **Request Type**: `GET`
+- **Purpose**: Retrieves nutritional information for a specific food item.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 200
+- Content:
+  ```json
+  [
+  {
+    "name": "banana",
+    "calories": 89,
+    "protein": 1.1,
+    "carbohydrates": 22.8,
+    "sugar": 12.2
+  }
+]
+- Error Response Example:
+- Code: 404
+- Content:
+- ```json
+  {
+  "error": "No data found"
+  }
+---
+### **12. Get Calories Information**
+- **Path**: `/calories/<food>`
+- **Request Type**: `GET`
+- **Purpose**: Retrieves calorie information for a specific food item.
+- **Response Format**: `JSON`
+- **Example Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    [
+      {
+        "name": "banana",
+        "calories": 89
+      }
+    ]
+    ```
+- **Error Response Example**:
+  - **Code**: 404
+  - **Content**:
+    ```json
+    {
+      "error": "No data found"
+    }
+    ```
+---
+### **13. Get Protein Information**
+- **Path**: `/protein/<food>`
+- **Request Type**: `GET`
+- **Purpose**: Retrieves protein information for a specific food item.
+- **Response Format**: `JSON`
+- **Example Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    [
+      {
+        "name": "banana",
+        "protein": 1.1
+      }
+    ]
+    ```
+- **Error Response Example**:
+  - **Code**: 404
+  - **Content**:
+    ```json
+    {
+      "error": "No data found"
+    }
+    ```
+
+---
+
+### **14. Get Carbohydrates Information**
+- **Path**: `/carbohydrates/<food>`
+- **Request Type**: `GET`
+- **Purpose**: Retrieves carbohydrate information for a specific food item.
+- **Response Format**: `JSON`
+- **Example Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    [
+      {
+        "name": "banana",
+        "carbohydrates": 22.8
+      }
+    ]
+    ```
+- **Error Response Example**:
+  - **Code**: 404
+  - **Content**:
+    ```json
+    {
+      "error": "No data found"
+    }
+    ```
+---
+
+### **15. Get Sugar Information**
+- **Path**: `/sugar/<food>`
+- **Request Type**: `GET`
+- **Purpose**: Retrieves sugar information for a specific food item.
+- **Response Format**: `JSON`
+- **Example Response**:
+  - **Code**: 200
+  - **Content**:
+    ```json
+    [
+      {
+        "name": "banana",
+        "sugar": 12.2
+      }
+    ]
+    ```
+- **Error Response Example**:
+  - **Code**: 404
+  - **Content**:
+    ```json
+    {
+      "error": "No data found"
+    }
+    ```
+
+---
   
 
 
