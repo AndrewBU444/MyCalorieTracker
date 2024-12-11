@@ -22,11 +22,6 @@ The application integrates with the Calorie Ninjas API to fetch nutritional valu
   - Carbohydrates
   - Sugar content  
   (via the **CalorieNinjas API**)
-- View **personalized feedback** based on calorie intake and goals.
-
-### Progress Monitoring
-- **Track weekly weigh-ins** and adjust goals as needed.
-- Access detailed **statistics** on progress toward calorie and fitness goals.
 
 ### External API Integration
 - Fetch detailed nutritional information for food items using the **CalorieNinjas API**.
