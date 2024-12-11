@@ -6,11 +6,6 @@ from datetime import datetime
 
 user_blueprint = Blueprint('user', __name__)
 
-@user_blueprint.route('/create-account', methods=['POST'])
-def create_account():
-    # Implementation here
-    ...
-
 # Routes
 # 1. Register a user and set a calorie goal (Create Account)
 @app.route('/create-account', methods=['POST'])
