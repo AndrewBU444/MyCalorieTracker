@@ -10,6 +10,19 @@ user_blueprint = Blueprint('user', __name__)
 # 1. Register a user and set a calorie goal (Create Account)
 @app.route('/create-account', methods=['POST'])
 def create_account():
+    """
+    Create a new user account.
+
+    Request:
+        - username (str): Username for the account.
+        - password (str): Password for the account.
+        - calorie_goal (int): Daily calorie goal for the user.
+        - starting_weight (float): Initial weight of the user.
+
+    Response:
+        - 201: Account created successfully.
+        - 400: Missing fields or user already exists.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -32,6 +45,19 @@ def create_account():
 # 2. Login (Authenticate User)
 @app.route('/login', methods=['POST'])
 def login():
+    """
+    Authenticate a user with username and password.
+
+    Request:
+        - username (str): Username for the account.
+        - password (str): Password for the account.
+
+    Response:
+        - 200: Login successful.
+        - 400: Missing fields.
+        - 404: User not found.
+        - 401: Invalid password.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -52,6 +78,20 @@ def login():
 # 3. Update password
 @app.route('/update-password', methods=['PUT'])
 def update_password():
+    """
+    Update a user's password.
+
+    Request:
+        - username (str): Username for the account.
+        - current_password (str): Current password of the user.
+        - new_password (str): New password to set.
+
+    Response:
+        - 200: Password updated successfully.
+        - 400: Missing fields.
+        - 404: User not found.
+        - 401: Incorrect current password.
+    """
     data = request.get_json()
     username = data.get('username')
     current_password = data.get('current_password')
@@ -76,6 +116,19 @@ def update_password():
 # 4. Add daily calorie intake
 @app.route('/intake', methods=['POST'])
 def add_calorie_intake():
+    """
+    Log daily calorie intake for a user.
+
+    Request:
+        - username (str): Username for the account.
+        - date (str): Date of calorie intake in YYYY-MM-DD format.
+        - calories (int): Number of calories consumed.
+
+    Response:
+        - 201: Calorie intake logged successfully.
+        - 400: Missing fields or invalid date format.
+        - 404: User not found.
+    """
     data = request.get_json()
     username = data.get('username')
     date_str = data.get('date')
@@ -101,6 +154,16 @@ def add_calorie_intake():
 # 5. Get calorie intake history
 @app.route('/history/<username>', methods=['GET'])
 def get_history(username):
+    """
+    Retrieve a user's calorie intake history.
+
+    Request:
+        - username (str): Username for the account.
+
+    Response:
+        - 200: History retrieved successfully.
+        - 404: User not found.
+    """
     user = User.query.filter_by(username=username).first()
     if not user:
         return jsonify({'error': 'User not found'}), 404
@@ -117,6 +180,18 @@ def get_history(username):
 # 7. Update calorie goal
 @app.route('/goal', methods=['PUT'])
 def update_goal():
+    """
+    Update a user's calorie goal.
+
+    Request:
+        - username (str): Username for the account.
+        - calorie_goal (int): New calorie goal to set.
+
+    Response:
+        - 200: Calorie goal updated successfully.
+        - 400: Missing fields.
+        - 404: User not found.
+    """
     data = request.get_json()
     username = data.get('username')
     new_goal = data.get('calorie_goal')
@@ -135,6 +210,16 @@ def update_goal():
 # 8. Delete user 
 @app.route('/delete/<username>', methods=['DELETE'])
 def delete_user(username):
+    """
+    Delete a user and their calorie intake history.
+
+    Request:
+        - username (str): Username for the account.
+
+    Response:
+        - 200: User deleted successfully.
+        - 404: User not found.
+    """
     user = User.query.filter_by(username=username).first()
     if not user:
         return jsonify({'error': 'User not found'}), 404
