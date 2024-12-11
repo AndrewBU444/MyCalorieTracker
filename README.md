@@ -97,6 +97,75 @@ The application integrates with the Calorie Ninjas API to fetch nutritional valu
   {
     "error": "User not found"
   }
+---
+### **6. Update Password**
+- **Path**: `/update-password`
+- **Request Type**: `PUT`
+- **Purpose**: Update the user's password.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 200
+- Content:
+  ```json
+  {
+    "message": "Password updated successfully"
+  }
+- Error Response Example:
+- Code: 401
+- Content:
+- ```json
+  {
+    "error": "Incorrect current password"
+  }
+- Error Response Example:
+- Code: 401
+- Content:
+- ```json
+  {
+    "error": "User not found"
+  }
+- Error Response Example:
+- Code: 400
+- Content:
+- ```json
+  {
+    "error": "Username, current password, and new password are required"
+  }  
+---
+### **7. Add Daily Calorie Intake**
+- **Path**: `/intake`
+- **Request Type**: `POST`
+- **Purpose**: Authenticates a user with their username and password.
+- **Response Format**: `JSON`
+- Example Response:
+- Code: 201
+- Content:
+  ```json
+  {
+    "message": "Calorie intake added succesfully."
+  }
+- Error Response Example:
+- Code: 400
+- Content:
+- ```json
+  {
+    "error": "Invalid date format. Use YYYY-MM-DD"
+  }
+- Error Response Example:
+- Code: 404
+- Content:
+- ```json
+  {
+    "error": "User not found."
+  }
+- Error Response Example:
+- Code: 40
+- Content:
+- ```json
+  {
+    "error": "Username, date, and calories are required."
+  }
+---
 
 
   
