@@ -10,6 +10,17 @@ db = SQLAlchemy(app)
 
 # Database Models
 class User(db.Model):
+    """
+    Represents a user in the calorie tracker application.
+
+    Attributes:
+        id (int): Primary key, unique identifier for each user.
+        username (str): Unique username for the user.
+        calorie_goal (int): Daily calorie goal set by the user.
+        starting_weight (float): User's starting weight.
+        salt (str): Salt used for password hashing.
+        password_hash (str): Hashed password for the user.
+    """
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False)
     calorie_goal = db.Column(db.Integer, nullable=False)
@@ -18,6 +29,15 @@ class User(db.Model):
     password_hash = db.Column(db.String(128), nullable=False)
 
     def __init__(self, username, password, calorie_goal, starting_weight):
+        """
+        Initializes a new user with the provided details.
+
+        Args:
+            username (str): The username of the user.
+            password (str): The raw password of the user.
+            calorie_goal (int): Daily calorie goal set by the user.
+            starting_weight (float): User's starting weight.
+        """
         self.username = username
         self.salt = self.generate_salt()
         self.password_hash = self.generate_password_hash(password)
@@ -45,6 +65,19 @@ class User(db.Model):
 # 1. Register a user and set a calorie goal (Create Account)
 @app.route('/create-account', methods=['POST'])
 def create_account():
+    """
+    Create a new user account.
+
+    Request:
+        - username (str): The username for the account.
+        - password (str): The password for the account.
+        - calorie_goal (int): The daily calorie goal for the user.
+        - starting_weight (float): The starting weight of the user.
+
+    Response:
+        - 201: Account created successfully.
+        - 400: Missing fields or user already exists.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -66,6 +99,19 @@ def create_account():
 # 2. Login (Authenticate User)
 @app.route('/login', methods=['POST'])
 def login():
+    """
+    Authenticate a user with their username and password.
+
+    Request:
+        - username (str): The username for the account.
+        - password (str): The password for the account.
+
+    Response:
+        - 200: Login successful.
+        - 400: Missing fields.
+        - 404: User not found.
+        - 401: Invalid password.
+    """
     data = request.get_json()
     username = data.get('username')
     password = data.get('password')
@@ -86,6 +132,20 @@ def login():
 # 3. Update password
 @app.route('/update-password', methods=['PUT'])
 def update_password():
+    """
+    Update a user's password.
+
+    Request:
+        - username (str): The username for the account.
+        - current_password (str): The current password of the user.
+        - new_password (str): The new password to set.
+
+    Response:
+        - 200: Password updated successfully.
+        - 400: Missing fields.
+        - 404: User not found.
+        - 401: Incorrect current password.
+    """
     data = request.get_json()
     username = data.get('username')
     current_password = data.get('current_password')
