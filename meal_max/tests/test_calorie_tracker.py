@@ -6,7 +6,15 @@ from meal_max.db import db, CalorieIntake, WeightLog
 
 @pytest.fixture
 def setup_database(app):
-    """Fixture to set up and tear down the database for tests."""
+    """
+    Fixture to set up and tear down the database for tests.
+
+    Args:
+        app: Flask application instance.
+
+    Yields:
+        None: Creates all database tables before test and drops them after.
+    """
     with app.app_context():
         db.create_all()
         yield
@@ -14,7 +22,12 @@ def setup_database(app):
 
 @pytest.fixture
 def calorie_tracker_model():
-    """Fixture to provide a new instance of CalorieTrackerModel for each test."""
+    """
+    Fixture to provide a new instance of CalorieTrackerModel for each test.
+
+    Returns:
+        CalorieTrackerModel: An instance of CalorieTrackerModel with test data.
+    """
     return CalorieTrackerModel(
         username="test_user",
         password="test_password",
@@ -24,15 +37,32 @@ def calorie_tracker_model():
 
 @pytest.fixture
 def sample_calorie_log():
+    """
+    Fixture to provide sample calorie log data.
+
+    Returns:
+        dict: Sample calorie log data.
+    """
     return {"user_id": 1, "date": date.today(), "calories": 1800}
 
 @pytest.fixture
 def sample_weight_log():
+    """
+    Fixture to provide sample weight log data.
+
+    Returns:
+        dict: Sample weight log data.
+    """
     return {"user_id": 1, "date": date.today(), "weight": 74.5}
 
 @pytest.fixture
 def sample_user(setup_database):
-    """Fixture to create a sample user."""
+    """
+    Fixture to create a sample user in the database.
+
+    Returns:
+        CalorieTrackerModel: A saved instance of a sample user.
+    """
     user = CalorieTrackerModel(
         username="test_user",
         password="test_password",
@@ -49,7 +79,11 @@ def sample_user(setup_database):
 ######################################################
 
 def test_create_user(setup_database):
-    """Test creating a new user."""
+    """
+    Test creating a new user in the database.
+
+    Verifies the user's attributes after creation.
+    """
     user = CalorieTrackerModel(
         username="new_user",
         password="secure_password",
@@ -68,14 +102,22 @@ def test_create_user(setup_database):
 
 
 def test_find_user(sample_user):
-    """Test finding an existing user."""
+    """
+    Test finding an existing user by username.
+
+    Verifies the returned user matches the expected data.
+    """
     user = CalorieTrackerModel.query.filter_by(username="test_user").first()
     assert user is not None
     assert user.username == "test_user"
 
 
 def test_find_user_not_found(setup_database):
-    """Test finding a non-existent user."""
+    """
+    Test finding a non-existent user.
+
+    Ensures the result is None.
+    """
     user = CalorieTrackerModel.query.filter_by(username="non_existent").first()
     assert user is None
 
@@ -85,7 +127,11 @@ def test_find_user_not_found(setup_database):
 ######################################################
 
 def test_log_calories(sample_user):
-    """Test logging calorie intake for a user."""
+    """
+    Test logging calorie intake for a user.
+
+    Verifies that the calorie log is correctly created in the database.
+    """
     log_date = date.today()
     sample_user.log_calories(user_id=sample_user.id, 
                              calories=1800, 
@@ -99,7 +145,11 @@ def test_log_calories(sample_user):
 
 
 def test_log_calories_duplicate_entry(sample_user):
-    """Test logging calories for the same date raises an error."""
+    """
+    Test that logging calories for the same date raises an error.
+
+    Ensures the application prevents duplicate entries.
+    """
     log_date = date.today()
     sample_user.log_calories(user_id=sample_user.id, calories=1800, log_date=log_date)
 
@@ -108,7 +158,11 @@ def test_log_calories_duplicate_entry(sample_user):
 
 
 def test_log_weight(sample_user):
-    """Test logging weight for a user."""
+    """
+    Test logging weight for a user.
+
+    Verifies that the weight log is correctly created in the database.
+    """
     log_date = date.today()
     sample_user.log_weight(user_id=sample_user.id, 
                            weight=74.5, 
@@ -126,7 +180,11 @@ def test_log_weight(sample_user):
 ######################################################
 
 def test_get_user_summary(sample_user):
-    """Test retrieving a user's summary."""
+    """
+    Test retrieving a user's summary.
+
+    Verifies the summary includes correct user details and logs.
+    """
     log_date = date.today()
     sample_user.log_calories(user_id=sample_user.id, 
                              calories=1800, 
@@ -148,7 +206,11 @@ def test_get_user_summary(sample_user):
 
 
 def test_get_user_summary_no_logs(sample_user):
-    """Test retrieving a user's summary with no logs."""
+    """
+    Test retrieving a user's summary when no logs exist.
+
+    Verifies the summary reflects an empty log list.
+    """
     summary = sample_user.get_user_summary(username="test_user")
 
     assert summary["username"] == "test_user"
